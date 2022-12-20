@@ -10,7 +10,6 @@ from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
 
-
 # fix random seeds for reproducibility
 SEED = 123
 torch.manual_seed(SEED)
@@ -22,9 +21,13 @@ def main(config):
     logger = config.get_logger('train')
 
     # setup data_loader instances
-    data_loader = config.init_obj('data_loader', module_data)
-    valid_data_loader = data_loader.split_validation()
-
+    #data_loader = config.init_obj('data_loader', module_data)
+    # valid_data_loader = data_loader.split_validation()
+    data_loader = module_data.get_loader('./data', mode='train', 
+                             batch_size=config['data_loader']['args']['batch_size'])
+    valid_data_loader = module_data.get_loader('./data', mode='val', 
+                             batch_size=config['data_loader']['args']['batch_size'])
+    
     # build model architecture, then print to console
     model = config.init_obj('arch', module_arch)
     logger.info(model)
@@ -70,4 +73,6 @@ if __name__ == '__main__':
         CustomArgs(['--bs', '--batch_size'], type=int, target='data_loader;args;batch_size')
     ]
     config = ConfigParser.from_args(args, options)
+    print(type(config))
+
     main(config)

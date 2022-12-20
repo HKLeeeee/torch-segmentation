@@ -1,5 +1,5 @@
 import torch
-
+import numpy as np
 
 def accuracy(output, target):
     with torch.no_grad():
@@ -18,3 +18,21 @@ def top_k_acc(output, target, k=3):
         for i in range(k):
             correct += torch.sum(pred[:, i] == target).item()
     return correct / len(target)
+
+#### segmentation ####
+def seg_accuracy(SR,GT,threshold=0.5):
+    SR = SR > threshold
+    GT = GT == torch.max(GT)
+    corr = torch.sum(SR==GT)
+    tensor_size = SR.size(0)*SR.size(1)*SR.size(2)*SR.size(3)
+    acc = float(corr)/float(tensor_size)
+
+    return acc
+
+def dice(x, y):
+    intersect = np.sum(np.sum(np.sum(x * y)))
+    y_sum = np.sum(np.sum(np.sum(y)))
+    if y_sum == 0:
+        return 0.0
+    x_sum = np.sum(np.sum(np.sum(x)))
+    return 2 * intersect / (x_sum + y_sum)

@@ -83,13 +83,15 @@ class BaseTrainer:
                     self.mnt_mode = 'off'
                     improved = False
 
+                
                 if improved:
                     self.mnt_best = log[self.mnt_metric]
                     not_improved_count = 0
                     best = True
                 else:
                     not_improved_count += 1
-
+                
+                # early stopping
                 if not_improved_count > self.early_stop:
                     self.logger.info("Validation performance didn\'t improve for {} epochs. "
                                      "Training stops.".format(self.early_stop))
