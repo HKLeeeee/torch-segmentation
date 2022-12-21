@@ -24,8 +24,8 @@ class SegmentationLoader(BaseDataLoader):
     # TODO
     # valid split 해결하기
     def __init__(self, data_dir, batch_size, shuffle=True, 
-                 validation_split=0.0, num_workers=1, mode='train'):
-        self.dataset = SegmentationDataset(data_path=data_dir, mode='train')
+                 validation_split=0.0, num_workers=1, mode='train', image_size=240):
+        self.dataset = SegmentationDataset(data_path=data_dir, mode='train', image_size=image_size)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
 

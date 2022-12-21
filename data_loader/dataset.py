@@ -25,7 +25,7 @@ class SegmentationDataset(Dataset):
             
     이미지들은 모두 png!
     '''
-    def __init__(self, data_path, mode='train'):
+    def __init__(self, data_path, mode='train', image_size=240):
         '''
             mode string is same with dataset split folder name
             train, test, val을 폴더명으로 폴더를 나누었으면 mode도 train 또는 val 
@@ -34,7 +34,7 @@ class SegmentationDataset(Dataset):
         self.image_path = os.path.join(os.path.join(data_path, 'images'), mode)
         self.mask_path = os.path.join(os.path.join(data_path, 'masks'), mode)
         self.mode = mode 
-        # print(self.image_path, self.mask_path)
+        print(self.image_path, self.mask_path)
 
         # list of image files
         self.images = glob(os.path.join(self.image_path, '*.jpg'))
@@ -51,7 +51,7 @@ class SegmentationDataset(Dataset):
             image = cv2.imread(self.images[0])
             # self.aug = get_augmentation(image.shape[0])
             del image
-            
+        self.image_size = image_size
              
     def __len__(self):
         return len(self.images)
@@ -66,13 +66,24 @@ class SegmentationDataset(Dataset):
         image = cv2.imread(image_path)
         mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
         
+        
+        
+        if mask.ndim == 3 :
+            if np.all(mask[:,:, 0] == mask[:,:,1]) and np.all(mask[:,:, 0] == mask[:,:,2]):
+                mask = mask[:,:,0].squeeze()
+            else : 
+                print('마스크가 이상해요!')
+                
         if self.mode == 'train':
             # augmentation = self.aug(image=image, mask=mask)
             # image = augmentation['image'].astype(np.float32) / 255.0
             # mask = augmentation['mask'].astype(np.float32)
             pass
         
-        
+        image = cv2.resize(image, (self.image_size, self.image_size))
+        mask = cv2.resize(mask, (self.image_size, self.image_size))
+    
+            
         image = image.transpose(2,0,1)
         #mask = mask.reshape((1,)+mask.shape)
         image = image.astype(np.float32) / 255.0

@@ -240,7 +240,7 @@ class AttU_Net(nn.Module):
         x4 = self.Att5(g=d5,x=x4)
         d5 = torch.cat((x4,d5),dim=1)        
         d5 = self.Up_conv5(d5)
-        
+            
         d4 = self.Up4(d5)
         x3 = self.Att4(g=d4,x=x3)
         d4 = torch.cat((x3,d4),dim=1)
