@@ -6,14 +6,17 @@ def nll_loss(output, target):
     return F.nll_loss(output, target)
 
 def cross_entropy(output, target):
-    return torch.nn.CrossEntropyLoss(output, target)
+    loss = torch.nn.CrossEntropyLoss()
+    return loss(output, target)
 
 def mse(output, target):
-    return torch.nn.MSELoss(output, target)
+    loss = torch.nn.MSELoss()
+    return loss(output, target)
 
 def bce_logitloss(output, target):
     loss = nn.BCEWithLogitsLoss()    
-    return loss(output.squeeze(), target.squeeze())
+    # return loss(output.squeeze(), target.squeeze())
+    return loss(output, target)
 
 def nmae(output, target):
     error = output - target
