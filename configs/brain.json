@@ -24,7 +24,7 @@
             "amsgrad": true
         }
     },
-    "loss": "mse",
+    "loss": "bce_logitloss",
     "metrics": [
         "accuracy", "dice"
     ],

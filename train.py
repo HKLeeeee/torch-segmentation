@@ -21,11 +21,11 @@ def main(config):
     logger = config.get_logger('train')
 
     # setup data_loader instances
-    #data_loader = config.init_obj('data_loader', module_data)
+    # data_loader = config.init_obj('data_loader', module_data)
     # valid_data_loader = data_loader.split_validation()
-    data_loader = module_data.get_loader('./data', mode='train', 
+    data_loader = module_data.get_loader('./data/plant/', mode='train', 
                              batch_size=config['data_loader']['args']['batch_size'])
-    valid_data_loader = module_data.get_loader('./data', mode='val', 
+    valid_data_loader = module_data.get_loader('./data/plant/', mode='valid', 
                              batch_size=config['data_loader']['args']['batch_size'])
     
     # build model architecture, then print to console

@@ -1,16 +1,16 @@
 {
-    "name": "Mnist_LeNet",
+    "name": "Binary_plant",
     "n_gpu": 1,
 
     "arch": {
-        "type": "MnistModel",
+        "type": "U_Net",
         "args": {}
     },
     "data_loader": {
-        "type": "MnistDataLoader",
+        "type": "SegmentationLoader",
         "args":{
-            "data_dir": "data2/",
-            "batch_size": 128,
+            "data_dir": "data/plant/",
+            "batch_size": 10,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2
@@ -24,9 +24,9 @@
             "amsgrad": true
         }
     },
-    "loss": "nll_loss",
+    "loss": "bce_logitloss",
     "metrics": [
-        "accuracy", "top_k_acc"
+        "seg_accuracy"
     ],
     "lr_scheduler": {
         "type": "StepLR",

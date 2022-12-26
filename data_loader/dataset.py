@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from torch.utils.data import Dataset
-# from .augmentation import get_augmentation
+from .augmentation import get_augmentation
 
 
 class SegmentationDataset(Dataset):
@@ -49,7 +49,7 @@ class SegmentationDataset(Dataset):
         if self.mode == 'train' :
             # load augmentation
             image = cv2.imread(self.images[0])
-            # self.aug = get_augmentation(image.shape[0])
+            self.aug = get_augmentation(image.shape[0])
             del image
         self.image_size = image_size
              
@@ -70,7 +70,7 @@ class SegmentationDataset(Dataset):
         
         if mask.ndim == 3 :
             if np.all(mask[:,:, 0] == mask[:,:,1]) and np.all(mask[:,:, 0] == mask[:,:,2]):
-                mask = mask[:,:,0].squeeze()
+                mask = mask[:,:,0]  # .squeeze()
             else : 
                 print('마스크가 이상해요!')
                 
@@ -85,9 +85,9 @@ class SegmentationDataset(Dataset):
     
             
         image = image.transpose(2,0,1)
-        #mask = mask.reshape((1,)+mask.shape)
+        mask = mask.reshape((1,)+mask.shape)
         image = image.astype(np.float32) / 255.0
         mask = mask.astype(np.float32)
-
+        
         return image, mask
     
