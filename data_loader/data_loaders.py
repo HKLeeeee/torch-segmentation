@@ -3,8 +3,7 @@ from base import BaseDataLoader
 import os
 import numpy as np
 import cv2
-from .dataset import SegmentationDataset
-from torch.utils.data import DataLoader
+from .dataset import SegmentationDataset, MultiClassSegmentationDataset
 
 class MnistDataLoader(BaseDataLoader):
     """
@@ -41,14 +40,24 @@ class SegmentationLoader(BaseDataLoader):
                          validation_split, 
                          num_workers)
 
-
-
-def get_loader(data_path, mode='train', batch_size=2, 
-               num_workers=2, collate_fn=None):
-    dataset = SegmentationDataset(data_path=data_path, mode=mode)
-    data_loader = DataLoader(dataset=dataset,
-                             batch_size=batch_size,
-                             shuffle=True,
-                             num_workers=num_workers,
-                             collate_fn=collate_fn)
-    return data_loader
+class MultiClassSegmentationLoader(BaseDataLoader):
+    # TODO
+    def __init__(self, 
+                 data_dir, 
+                 num_classes,
+                 batch_size, 
+                 shuffle=True, 
+                 num_workers=1, 
+                 mode='train', 
+                 image_size=240):
+        
+        self.dataset = MultiClassSegmentationDataset(data_path=data_dir,
+                                                     num_classes=num_classes, 
+                                                     mode=mode, 
+                                                     image_size=image_size)
+        validation_split = 0.0
+        super().__init__(self.dataset, 
+                         batch_size, 
+                         shuffle, 
+                         validation_split, 
+                         num_workers)

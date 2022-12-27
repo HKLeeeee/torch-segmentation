@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+import torch.nn.functional as F
 from torch.utils.data import Dataset
 from .augmentation import get_train_augmentation, get_valid_augmentation
 
@@ -76,3 +77,17 @@ class SegmentationDataset(Dataset):
         
         return image, mask
     
+
+class MultiClassSegmentationDataset(SegmentationDataset):
+    def __init__(self, data_path, num_classes, mode='train', image_size=240):
+        super().__init__(data_path=data_path,
+                         mode=mode,
+                         image_size=image_size)
+        self.num_classes = num_classes
+        
+    def __getitem__(self, idx):
+        image, mask = super().__getitem__(idx)
+        mask = mask.squeeze().to(torch.int64)
+        mask = F.one_hot(mask, num_classes=self.num_classes)
+        mask = mask.permute(2,0,1)
+        return image, mask
