@@ -6,14 +6,28 @@
         "type": "U_Net",
         "args": {}
     },
-    "data_loader": {
+    "train_data_loader": {
         "type": "SegmentationLoader",
         "args":{
             "data_dir": "data/",
             "batch_size": 10,
             "shuffle": true,
             "validation_split": 0.1,
-            "num_workers": 2
+            "num_workers": 2,
+            "mode": "train",
+            "image_size" : 240
+        }
+    },
+    "valid_data_loader": {
+        "type": "SegmentationLoader",
+        "args":{
+            "data_dir": "data/",
+            "batch_size": 10,
+            "shuffle": true,
+            "validation_split": 0.1,
+            "num_workers": 2,
+            "mode": "val",
+            "image_size" : 240
         }
     },
     "optimizer": {

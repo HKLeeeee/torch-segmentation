@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from torch.utils.data import Dataset
-from .augmentation import get_augmentation
+from .augmentation import get_train_augmentation, get_valid_augmentation
 
 
 class SegmentationDataset(Dataset):
@@ -46,12 +46,15 @@ class SegmentationDataset(Dataset):
             print('mask : ', self.mask_path)
             print('Check the file paths')
         
+        
+        self.image_size = image_size
+        
+        image = cv2.imread(self.images[0])
         if self.mode == 'train' :
             # load augmentation
-            image = cv2.imread(self.images[0])
-            self.aug = get_augmentation(image.shape[0])
-            del image
-        self.image_size = image_size
+            self.aug = get_train_augmentation(image.shape[0], self.image_size)
+        else :
+            self.aug = get_valid_augmentation(image.shape[0], self.image_size)
              
     def __len__(self):
         return len(self.images)
@@ -61,33 +64,15 @@ class SegmentationDataset(Dataset):
         filename = image_path.split('/')[-1].replace('jpg', 'png')
         mask_path = os.path.join(self.mask_path, filename)
 
-        # image = Image.open(image_path)
-        # mask = Image.open(mask_path)
-        image = cv2.imread(image_path)
-        mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
-        
-        
-        
-        if mask.ndim == 3 :
-            if np.all(mask[:,:, 0] == mask[:,:,1]) and np.all(mask[:,:, 0] == mask[:,:,2]):
-                mask = mask[:,:,0]  # .squeeze()
-            else : 
-                print('마스크가 이상해요!')
-                
-        if self.mode == 'train':
-            # augmentation = self.aug(image=image, mask=mask)
-            # image = augmentation['image'].astype(np.float32) / 255.0
-            # mask = augmentation['mask'].astype(np.float32)
-            pass
-        
-        image = cv2.resize(image, (self.image_size, self.image_size))
-        mask = cv2.resize(mask, (self.image_size, self.image_size))
-    
-            
-        image = image.transpose(2,0,1)
-        mask = mask.reshape((1,)+mask.shape)
-        image = image.astype(np.float32) / 255.0
-        mask = mask.astype(np.float32)
+        image = np.array(Image.open(image_path).convert('RGB'), dtype=np.float32)
+        mask = np.array(Image.open(mask_path).convert('L'), dtype=np.float32)
+
+        # 전처리, augmentation
+        augmentation = self.aug(image=image, mask=mask)
+        image = augmentation['image'] / 255.0
+        mask = augmentation['mask']
+        mask[mask == 255.0] = 1.0   
+        mask = mask.unsqueeze(0)
         
         return image, mask
     
