@@ -8,14 +8,26 @@
 
         }
     },
-    "data_loader": {
+    "train_data_loader": {
         "type": "SegmentationLoader",
         "args":{
             "data_dir": "data/plant/",
             "batch_size": 10,
             "shuffle": true,
-            "validation_split": 0.1,
-            "num_workers": 2
+            "num_workers": 2,
+            "mode": "train",
+            "image_size" : 240
+        }
+    },
+    "valid_data_loader": {
+        "type": "SegmentationLoader",
+        "args":{
+            "data_dir": "data/plant/",
+            "batch_size": 10,
+            "shuffle": true,
+            "num_workers": 2,
+            "mode": "valid",
+            "image_size" : 240
         }
     },
     "optimizer": {
@@ -38,7 +50,7 @@
         }
     },
     "trainer": {
-        "epochs": 30,
+        "epochs": 10,
 
         "save_dir": "saved/",
         "save_period": 1,

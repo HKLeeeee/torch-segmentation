@@ -21,12 +21,8 @@ def main(config):
     logger = config.get_logger('train')
 
     # setup data_loader instances
-    # data_loader = config.init_obj('data_loader', module_data)
-    # valid_data_loader = data_loader.split_validation()
-    data_loader = module_data.get_loader('./data/plant/', mode='train', 
-                             batch_size=config['data_loader']['args']['batch_size'])
-    valid_data_loader = module_data.get_loader('./data/plant/', mode='valid', 
-                             batch_size=config['data_loader']['args']['batch_size'])
+    data_loader = config.init_obj('train_data_loader', module_data)
+    valid_data_loader = config.init_obj('valid_data_loader', module_data)
     
     # build model architecture, then print to console
     model = config.init_obj('arch', module_arch)

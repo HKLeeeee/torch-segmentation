@@ -32,10 +32,14 @@ class SegmentationLoader(BaseDataLoader):
                  image_size=240):
         
         self.dataset = SegmentationDataset(data_path=data_dir, 
-                                           mode='train', 
+                                           mode=mode, 
                                            image_size=image_size)
         validation_split = 0.0
-        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
+        super().__init__(self.dataset, 
+                         batch_size, 
+                         shuffle, 
+                         validation_split, 
+                         num_workers)
 
 
 

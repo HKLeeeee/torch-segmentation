@@ -52,9 +52,9 @@ class SegmentationDataset(Dataset):
         image = cv2.imread(self.images[0])
         if self.mode == 'train' :
             # load augmentation
-            self.aug = get_train_augmentation(image.shape[0], self.image_size)
+            self.aug = get_train_augmentation(min(image.shape), self.image_size)
         else :
-            self.aug = get_valid_augmentation(image.shape[0], self.image_size)
+            self.aug = get_valid_augmentation(min(image.shape), self.image_size)
              
     def __len__(self):
         return len(self.images)
@@ -64,7 +64,7 @@ class SegmentationDataset(Dataset):
         filename = image_path.split('/')[-1].replace('jpg', 'png')
         mask_path = os.path.join(self.mask_path, filename)
 
-        image = np.array(Image.open(image_path).convert('RGB'), dtype=np.float32)
+        image = np.array(Image.open(image_path).convert('RGB'))
         mask = np.array(Image.open(mask_path).convert('L'), dtype=np.float32)
 
         # 전처리, augmentation
