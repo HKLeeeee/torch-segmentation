@@ -26,12 +26,12 @@ class MnistModel(BaseModel):
 
 
 class U_Net(BaseModel):
-    def __init__(self,img_ch=3, output_ch=1):
+    def __init__(self,in_channels=3, output_ch=1):
         super(U_Net,self).__init__()
         
         self.Maxpool = nn.MaxPool2d(kernel_size=2,stride=2)
 
-        self.Conv1 = conv_block(ch_in=img_ch,ch_out=64)
+        self.Conv1 = conv_block(ch_in=in_channels,ch_out=64)
         self.Conv2 = conv_block(ch_in=64,ch_out=128)
         self.Conv3 = conv_block(ch_in=128,ch_out=256)
         self.Conv4 = conv_block(ch_in=256,ch_out=512)
@@ -92,13 +92,13 @@ class U_Net(BaseModel):
 
 
 class R2U_Net(nn.Module):
-    def __init__(self,img_ch=3,output_ch=1,t=2):
+    def __init__(self,in_channels=3,output_ch=1,t=2):
         super(R2U_Net,self).__init__()
         
         self.Maxpool = nn.MaxPool2d(kernel_size=2,stride=2)
         self.Upsample = nn.Upsample(scale_factor=2)
 
-        self.RRCNN1 = RRCNN_block(ch_in=img_ch,ch_out=64,t=t)
+        self.RRCNN1 = RRCNN_block(ch_in=in_channels,ch_out=64,t=t)
 
         self.RRCNN2 = RRCNN_block(ch_in=64,ch_out=128,t=t)
         
@@ -164,12 +164,12 @@ class R2U_Net(nn.Module):
 
 
 class AttU_Net(nn.Module):
-    def __init__(self,img_ch=3,output_ch=1):
+    def __init__(self,in_channels=3,output_ch=1):
         super(AttU_Net,self).__init__()
         
         self.Maxpool = nn.MaxPool2d(kernel_size=2,stride=2)
 
-        self.Conv1 = conv_block(ch_in=img_ch,ch_out=64)
+        self.Conv1 = conv_block(ch_in=in_channels,ch_out=64)
         self.Conv2 = conv_block(ch_in=64,ch_out=128)
         self.Conv3 = conv_block(ch_in=128,ch_out=256)
         self.Conv4 = conv_block(ch_in=256,ch_out=512)
@@ -237,13 +237,13 @@ class AttU_Net(nn.Module):
 
 
 class R2AttU_Net(nn.Module):
-    def __init__(self,img_ch=3,output_ch=1,t=2):
+    def __init__(self,in_channels=3,output_ch=1,t=2):
         super(R2AttU_Net,self).__init__()
         
         self.Maxpool = nn.MaxPool2d(kernel_size=2,stride=2)
         self.Upsample = nn.Upsample(scale_factor=2)
 
-        self.RRCNN1 = RRCNN_block(ch_in=img_ch,ch_out=64,t=t)
+        self.RRCNN1 = RRCNN_block(ch_in=in_channels,ch_out=64,t=t)
 
         self.RRCNN2 = RRCNN_block(ch_in=64,ch_out=128,t=t)
         
@@ -325,7 +325,7 @@ class MonaiResidualUNet(nets.UNet):
                                         kernel_size=3, 
                                         up_kernel_size=3, 
                                         num_res_units=0, 
-                                        act='PRELU', 
+                                        act='PRELU',  # activation
                                         norm='INSTANCE', 
                                         dropout=0.0, 
                                         bias=True, 
@@ -353,7 +353,8 @@ class MonaiAttentionUnet(nets.AttentionUnet):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.channels = (64, 128, 256, 512)
-        self.strides = [(1, 1), (1,1), (1,1)]
+        # self.strides = [(1, 1), (1,1), (1,1)]
+        self.strides = [1,1,1]
         self.kernel_size = 3,
         self.up_kernel_size = 3,
         self.dropout = 0.0

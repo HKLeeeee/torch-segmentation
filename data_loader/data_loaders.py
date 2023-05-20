@@ -3,7 +3,7 @@ from base import BaseDataLoader
 import os
 import numpy as np
 import cv2
-from .dataset import SegmentationDataset, MultiClassSegmentationDataset
+from .dataset import SegmentationDataset, MultiClassSegmentationDataset, CityscapeDataset
 
 class MnistDataLoader(BaseDataLoader):
     """
@@ -40,6 +40,26 @@ class SegmentationLoader(BaseDataLoader):
                          validation_split, 
                          num_workers)
 
+class CityLoader(BaseDataLoader):
+    # TODO
+    def __init__(self, 
+                 data_dir, 
+                 batch_size, 
+                 shuffle=True, 
+                 num_workers=1, 
+                 mode='train', 
+                 image_size=240):
+        
+        self.dataset = CityscapeDataset(data_path=data_dir, 
+                                           mode=mode, 
+                                           image_size=image_size)
+        validation_split = 0.0
+        super().__init__(self.dataset, 
+                         batch_size, 
+                         shuffle, 
+                         validation_split, 
+                         num_workers)
+        
 class MultiClassSegmentationLoader(BaseDataLoader):
     # TODO
     def __init__(self, 
